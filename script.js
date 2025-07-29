@@ -67,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Функции из оригинала
 function toggleMenu() {
   const menu = document.getElementById('side-menu');
   menu.classList.toggle('open');
@@ -241,30 +240,6 @@ document.querySelectorAll('.modal').forEach(modal => {
   });
 });
 
-// Добавление нового отзыва с Firebase
-function submitReview() {
-  const userName = document.getElementById('reviewName').value || 'Аноним';
-  const comment = document.getElementById('reviewText').value;
-  const rating = 5; // Фиксированный рейтинг 5, как указано в "Отзывы с рейтингом 5"
-  if (!comment) {
-    alert('Пожалуйста, напишите отзыв.');
-    return;
-  }
-  db.collection('CheshirCat').add({
-    userName: userName,
-    comment: comment,
-    rating: rating,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(() => {
-    document.getElementById('reviewName').value = '';
-    document.getElementById('reviewText').value = '';
-    alert('Спасибо за ваш отзыв!');
-  }).catch((error) => {
-    console.error('Ошибка при добавлении отзыва: ', error);
-    alert('Произошла ошибка. Попробуйте снова.');
-  });
-}
-
 // Слайдер товаров
 let slideIndex = 0;
 const sliderTrack = document.getElementById('sliderTrack');
@@ -325,37 +300,3 @@ setInterval(nextSlide, 5000);
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
-// Инициализация Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyAgaOh_o19HVFufMIQj-XEc",
-  authDomain: "cheshir-fed83.firebaseapp.com",
-  projectId: "cheshir-fed83",
-  storageBucket: "cheshir-fed83.appspot.com",
-  messagingSenderId: "733642341122",
-  appId: "1:733642341122:web:afd2dd217e"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// Отображение отзывов
-const reviewsList = document.getElementById('reviewsList');
-db.collection('CheshirCat').orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
-  reviewsList.innerHTML = '';
-  snapshot.forEach((doc) => {
-    const review = doc.data();
-    if (review.rating === 5) { // Показываем только отзывы с рейтингом 5
-      reviewsList.innerHTML += `
-        <div class="review-item">
-          <h3>${review.userName || 'Аноним'}</h3>
-          <p>${review.comment || 'Без комментария'}</p>
-          <p>Рейтинг: ${review.rating || 0}/5</p>
-          <p>Дата: ${review.timestamp ? review.timestamp.toDate().toLocaleString() : 'Нет даты'}</p>
-        </div>
-      `;
-    }
-  });
-}, (error) => {
-  console.error('Ошибка при загрузке отзывов: ', error);
-});
