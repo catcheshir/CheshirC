@@ -326,7 +326,7 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Инициализация Firebase (добавлено здесь для использования db)
+// Инициализация Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAgaOh_o19HVFufMIQj-XEc",
   authDomain: "cheshir-fed83.firebaseapp.com",
@@ -356,4 +356,6 @@ db.collection('CheshirCat').orderBy('timestamp', 'desc').onSnapshot((snapshot) =
       `;
     }
   });
+}, (error) => {
+  console.error('Ошибка при загрузке отзывов: ', error);
 });
